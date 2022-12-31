@@ -1,11 +1,17 @@
 name: Java Tutorial Bazel Test and Build
 
 on:
-  push: {}
+  push:
+    branches:
+      - "main"
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./java-tutorial
 
     steps:
       - uses: actions/checkout@v1
@@ -15,8 +21,6 @@ jobs:
         with:
           path: "~/.cache/bazel"
           key: Gradle-Bazel-Example-Repo
-      - name: Change Directory
-        run: cd java-tutorial
       - name: Test
         run: |
           bazel test //...
