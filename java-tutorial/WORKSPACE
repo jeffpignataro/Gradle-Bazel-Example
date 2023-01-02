@@ -1,0 +1,61 @@
+workspace(name = "java-tutorial")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "contrib_rules_jvm",
+    sha256 = "548f0583192ff79c317789b03b882a7be9b1325eb5d3da5d7fdcc4b7ca69d543",
+    strip_prefix = "rules_jvm-0.9.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/refs/tags/v0.9.0.tar.gz",
+)
+
+# Fetches the contrib_rules_jvm dependencies.
+# If you want to have a different version of some dependency,
+# you should fetch it *before* calling this.
+load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
+
+contrib_rules_jvm_deps()
+
+# Now ensure that the downloaded deps are properly configured
+load("@contrib_rules_jvm//:setup.bzl", "contrib_rules_jvm_setup")
+
+contrib_rules_jvm_setup()
+
+http_archive(
+    name = "rules_jvm_external",
+    sha256 = "23fe83890a77ac1a3ee143e2306ec12da4a845285b14ea13cb0df1b1e23658fe",
+    strip_prefix = "rules_jvm_external-4.3",
+    urls = ["https://github.com/bazelbuild/rules_jvm_external/archive/refs/tags/4.3.tar.gz"],
+)
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+maven_install(
+    artifacts = [
+        # JUnit 4
+        "junit:junit:4.13.1",
+
+        # Hamcrest
+        "org.hamcrest:hamcrest-all:1.3",
+
+        # JUnit 5
+        "org.junit.jupiter:junit-jupiter-api:5.8.2",
+        "org.junit.jupiter:junit-jupiter-engine:5.8.2",
+        "org.junit.platform:junit-platform-commons:1.8.2",
+        "org.junit.platform:junit-platform-engine:1.8.2",
+        "org.junit.platform:junit-platform-launcher:1.8.2",
+        "org.junit.platform:junit-platform-reporting:1.8.2",
+
+        # JUnit5 backcompat for JUnit 4
+        "org.junit.vintage:junit-vintage-engine:5.8.2",
+    ],
+    fetch_sources = True,
+    maven_install_json = "@java-tutorial//:maven_install.json",
+    repositories = [
+        "https://repo1.maven.org/maven2",
+    ],
+)
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
