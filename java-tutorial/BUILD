@@ -17,6 +17,7 @@ java_binary(
 
 java_test_suite(
     name = "ProjectRunnerTests",
+    size = "small",
     srcs = glob(["src/test/java/**/*.java"]),
     runner = "junit5",
     test_suffixes = ["Tests.java"],
